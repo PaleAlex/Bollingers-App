@@ -25,18 +25,20 @@ ticker_diz = {"Stellantis": "STLA.MI",
               "Nvidia": "NVDA",
               "Tesla": "TSLA"}
 
-col1, col2, col3, col4 = st.columns([1,4,1,1])
+col1, col2, col3= st.columns([1,4,1])
 with col1:
     with st.form(key = "search_bar"):
-        sel1 = st.selectbox("Seleziona lo stock", ticker_diz.keys())
-        sel2 = st.text_input("oppure cerca un altro ticker...")
+        sel1 = st.selectbox("Seleziona lo stock", [""]+list(ticker_diz.keys()))
+        sel2 = st.text_input("oppure cerca un altro ticker...", placeholder="es. AAPL")
         st.form_submit_button("Calcola")
 
 try:
     with col2:
         if sel2:
-            selection = sel2
+            selection = sel2.upper()
         else:
+            if not sel1:
+                raise Exception()
             selection = ticker_diz[sel1]
         with st.spinner(text="Calcolando..."):
             obj = bs(selection,start,end)
@@ -59,7 +61,7 @@ try:
 
         line3 = base.mark_line(color='blue').encode(
         alt.Y('Adj Close:Q',
-            axis=alt.Axis(title='Prezzo'),
+            axis=alt.Axis(title=f'Prezzo {selection}'),
             scale=alt.Scale(domain=(0, df["Adj Close"].max()*2)))
         )
 
@@ -105,4 +107,5 @@ try:
             st.write(f"Parametri ottimizzati: sma = {sma} | dev_up = {round(devup,1)} | dev_down {round(devdown,1)}")
             st.write(f"Exp moving average ultimi 5 giorni: {list(obj.volume_check(sma))}")
 except:
-    st.experimental_rerun()
+    with col2:
+        st.write("**<br><br><br><p style='text-align:center'>Scegli il titolo da analizzare</p>**", unsafe_allow_html=True)
