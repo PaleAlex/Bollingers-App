@@ -72,10 +72,13 @@ class BollingerStrategy():
             res.append(price)
 
         if res:
-            opt = combinations[np.argmax(res)]
-            return opt[0], opt[1], opt[2]
+            if np.max(res)>1:
+                opt = combinations[np.argmax(res)]
+                return opt[0], opt[1], opt[2]
+            else:
+                return 60,2.6,2.6 #default, no optimization happened
         else:
-            return 20, 2.0, 2.0 #default, no optimization happened
+            return 60,2.6,2.6 #default, no optimization happened
     
     def volume_check(self, sma):
         data = self.data.copy()
