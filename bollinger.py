@@ -19,7 +19,7 @@ class BollingerStrategy():
         raw.index = pd.to_datetime(raw.index)
         raw.index.rename("Date", inplace = True)
         raw['TP'] = (raw["High"] + raw["Low"] + raw["Adj Close"])/3
-        self.data = raw.iloc[:,4:]
+        self.data = raw#.iloc[:,4:]
     
     def set_parameters(self, sma, dev_up, dev_down):        
         self.data["SMA"] = self.data['TP'].rolling(sma).mean()
@@ -82,9 +82,9 @@ class BollingerStrategy():
     
     def volume_check(self, sma):
         data = self.data.copy()
-        alpha = 1-np.log(2)/3    # This is ewma's decay factor.
+        alpha = 1-np.log(4)/3    # This is ewma's decay factor.
         weights = list(reversed([(1-alpha)**n for n in range(sma)]))
         ewma = partial(np.average, weights=weights)
-        data['Volume_check'] = data['Volume'].rolling(sma).apply(ewma)/data['Volume'].mean()
+        data['Volume_check'] = (data['Volume'].rolling(sma).apply(ewma))/data['Volume'].mean()
         return data['Volume_check'].tail()
         

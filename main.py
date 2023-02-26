@@ -1,18 +1,17 @@
 from datetime import timedelta, datetime
 from bollinger import BollingerStrategy as bs
+from portfolio import MCPortfolio as mc
 import streamlit as st
 import altair as alt
-
+import numpy as np
 st.set_page_config(page_title="Silver&Ale - Investments",
                    page_icon=":globe_with_meridians:",
                    layout="wide")
 
 st.title("🚀 Silver & Ale - Grandi investimenti 🚀 📈")
 
-start = datetime.now()-timedelta(days=400)
+start = datetime.now()-timedelta(days=420)
 end = datetime.now()
-
-
 
 ticker_diz = {"Stellantis": "STLA.MI",
               "Safilo": "SFL.MI",
@@ -22,6 +21,10 @@ ticker_diz = {"Stellantis": "STLA.MI",
               "Industrie De Nora": "DNR.MI",
               "WeBuild": "WBD.MI",
               "Alerion": "ARN.MI",
+              "Eurotech": "ETH.MI",
+              "TISG": "TISG.MI",
+              "Digitouch": "DGT.MI",
+              "CY4": "CY4.MI",
               "Nvidia": "NVDA",
               "Tesla": "TSLA"}
 
@@ -47,8 +50,7 @@ try:
 
         to_plot = df.reset_index()
         base = alt.Chart(to_plot).encode(
-        alt.X('Date:T', axis=alt.Axis(title="t"),
-                        scale=alt.Scale(domain=(to_plot["Date"].min()-timedelta(days=1), to_plot["Date"].max()+timedelta(days=6))))
+            alt.X('Date:T', axis=alt.Axis(title="t"))
         )
 
         line1 = base.mark_line(opacity=0.3, color='#57A44C').encode(
@@ -109,3 +111,52 @@ try:
 except:
     with col2:
         st.write("**<br><br><br><p style='text-align:center'>Scegli il titolo da analizzare</p>**", unsafe_allow_html=True)
+
+
+st.write("#### Verifica più stocks")
+col1, col2= st.columns([1,1])
+
+with col1:
+    with st.form(key = "more_searches"):
+        more_stocks = st.text_input("Lista di ticker separati da virgola", placeholder="es. AAPL,TSLA,GOOG")
+        calcola = st.form_submit_button("Calcola")
+
+if calcola:
+    more_stocks = more_stocks.upper().strip().split(",")
+
+    with col2:
+        for stock in more_stocks:
+            with st.spinner(text=f"Calcolando {stock}..."):
+                obj = bs(stock,start,end)
+                sma, devup, devdown = obj.optimizer()
+                df = obj.set_parameters(sma,devup,devdown)
+                lasts = df.iloc[-3:,:]
+
+                highers = lasts['High'].values
+                lowers = lasts['Low'].values
+                last_uppers = lasts["Upper"].values
+                last_lowers = lasts["Lower"].values
+
+                higher_differences = np.subtract.outer(last_uppers, highers).flatten()
+                lower_differences = np.subtract.outer(last_lowers, lowers).flatten()
+
+                if np.any(higher_differences<=0) or np.any(lower_differences>=0):
+                    st.write(f"**{stock} è da tenere d'occhio!**")
+                else:
+                    st.write(f"{stock} neutro")
+
+st.write("#### Calcolo miglior portfolio")
+col1, col2= st.columns([1,1])
+
+with col1:
+    with st.form(key = "porfolio"):
+        ticker_stocks = st.text_input("Lista di ticker separati da virgola", placeholder="es. AAPL,TSLA,GOOG")
+        calcola_portfolio = st.form_submit_button("Calcola")
+
+if calcola_portfolio:
+    ticker_stocks_list = ticker_stocks.upper().strip().split(",")
+    with col2:
+        with st.spinner(text="Calcolando..."):
+            tester = mc(ticker_stocks_list, start, end)
+            res = tester.optimizer()
+            st.dataframe(res)
