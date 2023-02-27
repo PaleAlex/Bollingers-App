@@ -4,6 +4,7 @@ from portfolio import MCPortfolio as mc
 import streamlit as st
 import altair as alt
 import numpy as np
+
 st.set_page_config(page_title="Silver&Ale - Investments",
                    page_icon=":globe_with_meridians:",
                    layout="wide")
@@ -126,24 +127,25 @@ if calcola:
 
     with col2:
         for stock in more_stocks:
-            with st.spinner(text=f"Calcolando {stock}..."):
-                obj = bs(stock,start,end)
-                sma, devup, devdown = obj.optimizer()
-                df = obj.set_parameters(sma,devup,devdown)
-                lasts = df.iloc[-3:,:]
+            if stock:
+                with st.spinner(text=f"Calcolando {stock}..."):
+                    obj = bs(stock,start,end)
+                    sma, devup, devdown = obj.optimizer()
+                    df = obj.set_parameters(sma,devup,devdown)
+                    lasts = df.iloc[-3:,:]
 
-                highers = lasts['High'].values
-                lowers = lasts['Low'].values
-                last_uppers = lasts["Upper"].values
-                last_lowers = lasts["Lower"].values
+                    highers = lasts['High'].values
+                    lowers = lasts['Low'].values
+                    last_uppers = lasts["Upper"].values
+                    last_lowers = lasts["Lower"].values
 
-                higher_differences = np.subtract.outer(last_uppers, highers).flatten()
-                lower_differences = np.subtract.outer(last_lowers, lowers).flatten()
+                    higher_differences = np.subtract.outer(last_uppers, highers).flatten()
+                    lower_differences = np.subtract.outer(last_lowers, lowers).flatten()
 
-                if np.any(higher_differences<=0) or np.any(lower_differences>=0):
-                    st.write(f"**{stock} è da tenere d'occhio!**")
-                else:
-                    st.write(f"{stock} neutro")
+                    if np.any(higher_differences<=0) or np.any(lower_differences>=0):
+                        st.write(f"**{stock} è da tenere d'occhio!**")
+                    else:
+                        st.write(f"{stock} neutro")
 
 st.write("#### Calcolo miglior portfolio")
 col1, col2= st.columns([1,1])
@@ -158,5 +160,6 @@ if calcola_portfolio:
     with col2:
         with st.spinner(text="Calcolando..."):
             tester = mc(ticker_stocks_list, start, end)
-            res = tester.optimizer()
+            res, r = tester.optimizer()
             st.dataframe(res)
+            st.write(r)
