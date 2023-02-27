@@ -160,6 +160,5 @@ if calcola_portfolio:
     with col2:
         with st.spinner(text="Calcolando..."):
             tester = mc(ticker_stocks_list, start, end)
-            res, r = tester.optimizer()
+            res = tester.optimizer()
             st.dataframe(res)
-            st.write(r)
