@@ -1,4 +1,4 @@
 # Bollingers-App
-Streamlit web app for Bollinger bands analysis and optimization
+Streamlit web app for Bollinger bands trading analysis and portfolio optimization. The app is written in italian language.
 
-Find me at: [https://cioccos.streamlit.app/]
+Find it at: https://cioccos.streamlit.app/
