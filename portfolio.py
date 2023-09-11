@@ -29,9 +29,9 @@ class MCPortfolio():
         self.result = result
     
     def optimizer(self):
-        n = 15000
-        one_year_ago = datetime.today() - timedelta(days=365)
-        BUSINESS_DAYS = len(self.result.loc[one_year_ago:])
+        n = 25000
+        two_years_ago = datetime.today() - timedelta(days=780)
+        BUSINESS_DAYS = len(self.result.loc[two_years_ago:])
 
         weights = np.zeros((n, len(self.result.columns)))
         exp_returns = np.zeros(n)
