@@ -157,7 +157,7 @@ with col1:
 
 if calcola_portfolio:
     ticker_stocks_list = ticker_stocks.upper().strip().split(",")
-    start = datetime.now()-timedelta(days=1875)
+    start = datetime.now()-timedelta(days=1300)
     with col2:
         with st.spinner(text="Calcolando..."):
             tester = mc(ticker_stocks_list, start, end)
