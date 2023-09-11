@@ -29,7 +29,7 @@ class MCPortfolio():
         self.result = result
     
     def optimizer(self):
-        n = 35000
+        n = 50000
         four_years_ago = datetime.today() - timedelta(days=1680)
         BUSINESS_DAYS = len(self.result.loc[four_years_ago:])
 
