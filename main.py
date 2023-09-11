@@ -5,11 +5,11 @@ import streamlit as st
 import altair as alt
 import numpy as np
 
-st.set_page_config(page_title="Silver&Ale - Investments",
+st.set_page_config(page_title="PaleAlex: Investmenti",
                    page_icon=":globe_with_meridians:",
                    layout="wide")
 
-st.title("🚀 Silver & Ale - Grandi investimenti 🚀 📈")
+st.title("🚀 Supporto agli investimenti finanziari 🚀 📈")
 
 start = datetime.now()-timedelta(days=420)
 end = datetime.now()
@@ -157,6 +157,7 @@ with col1:
 
 if calcola_portfolio:
     ticker_stocks_list = ticker_stocks.upper().strip().split(",")
+    start = datetime.now()-timedelta(days=820)
     with col2:
         with st.spinner(text="Calcolando..."):
             tester = mc(ticker_stocks_list, start, end)
