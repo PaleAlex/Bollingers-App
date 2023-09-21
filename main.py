@@ -14,7 +14,7 @@ st.title("🚀 Supporto agli investimenti finanziari 🚀 📈")
 start = datetime.now()-timedelta(days=420)
 end = datetime.now()
 
-ticker_diz = {"Stellantis": "STLA.MI",
+ticker_diz = {"Stellantis": "STLAM.MI",
               "Safilo": "SFL.MI",
               "Saipem": "SPM.MI",
               "Prysmian": "PRY.MI",
@@ -153,11 +153,12 @@ col1, col2= st.columns([1,1])
 with col1:
     with st.form(key = "porfolio"):
         ticker_stocks = st.text_input("Lista di ticker separati da virgola", placeholder="es. AAPL,TSLA,GOOG")
+        days_ago = int(st.number_input("Analisi da _ giorni fa", min_value=365, max_value=1299))
         calcola_portfolio = st.form_submit_button("Calcola")
 
 if calcola_portfolio:
     ticker_stocks_list = ticker_stocks.upper().strip().split(",")
-    start = datetime.now()-timedelta(days=1300)
+    start = datetime.now()-timedelta(days=days_ago)
     with col2:
         with st.spinner(text="Calcolando..."):
             tester = mc(ticker_stocks_list, start, end)
