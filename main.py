@@ -158,9 +158,9 @@ with col1:
 
 if calcola_portfolio:
     ticker_stocks_list = ticker_stocks.upper().strip().split(",")
-    start = datetime.now()-timedelta(days=days_ago)
+    start = datetime.now()-timedelta(days=days_ago+1)
     with col2:
         with st.spinner(text="Calcolando..."):
-            tester = mc(ticker_stocks_list, start, end)
+            tester = mc(ticker_stocks_list, start, end, days_ago)
             res = tester.optimizer()
             st.dataframe(res)
