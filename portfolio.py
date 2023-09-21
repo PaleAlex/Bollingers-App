@@ -30,8 +30,7 @@ class MCPortfolio():
     
     def optimizer(self):
         n = 50000
-        three_years_ago = datetime.today() - timedelta(days=1277)
-        BUSINESS_DAYS = len(self.result.loc[three_years_ago:])
+        BUSINESS_DAYS = 252 # mean annual business day
 
         weights = np.zeros((n, len(self.result.columns)))
         exp_returns = np.zeros(n)
