@@ -54,6 +54,14 @@ try:
             alt.X('Date:T', axis=alt.Axis(title="t"))
         )
 
+        line1 = base.mark_line(opacity=0.3, color='#57A44C').encode(
+            alt.Y('Upper:Q')
+        )
+
+        line2 = base.mark_line(opacity=0.3, color='#57A44C').encode(
+        alt.Y('Lower:Q')
+        )
+
         # Add tooltips
         line3 = base.mark_line(color='blue').encode(
             alt.Y('Adj Close:Q',
