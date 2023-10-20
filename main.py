@@ -54,23 +54,60 @@ try:
             alt.X('Date:T', axis=alt.Axis(title="t"))
         )
 
-        line1 = base.mark_line(opacity=0.3, color='#57A44C').encode(
-            alt.Y('Upper:Q')
-        )
-
-        line2 = base.mark_line(opacity=0.3, color='#57A44C').encode(
-        alt.Y('Lower:Q')
-        )
-
+        # Add tooltips
         line3 = base.mark_line(color='blue').encode(
-        alt.Y('Adj Close:Q',
-            axis=alt.Axis(title=f'Prezzo {selection}'),
-            scale=alt.Scale(domain=(0, df["Adj Close"].max()*2)))
+            alt.Y('Adj Close:Q',
+                axis=alt.Axis(title=f'Prezzo {selection}'),
+                scale=alt.Scale(domain=(0, df["Adj Close"].max()*2))),
+            tooltip=['Date', 'Adj Close']
         )
-
+        
+        # Enable zooming and panning
         c = alt.layer(line1, line2, line3).interactive()
         
-
+        # Add a selection for the x-axis range
+        brush = alt.selection_interval(encodings=['x'])
+        
+        # Bind the selection to the x-axis scale
+        base = base.add_selection(brush)
+        
+        # Add a conditional encoding for the selected range
+        line3 = line3.encode(
+            color=alt.condition(brush, alt.value('blue'), alt.value('lightgray'))
+        )
+        
+        # Bind the selection to the x-axis scale
+        line3 = line3.add_selection(brush)
+        
+        # Add a slider to control the opacity of the lines
+        opacity_slider = alt.binding_range(min=0, max=1, step=0.1, name='Opacity:')
+        opacity_selection = alt.selection_single(bind=opacity_slider, fields=['opacity'], init={'opacity': 0.3})
+        line1 = line1.encode(
+            opacity=alt.condition(opacity_selection, alt.value(0.3), alt.value(0))
+        )
+        line2 = line2.encode(
+            opacity=alt.condition(opacity_selection, alt.value(0.3), alt.value(0))
+        )
+        
+        # Bind the opacity selection to the opacity slider
+        opacity_slider = opacity_slider.add_selection(opacity_selection)
+        
+        # Combine the chart and the slider
+        c = alt.vconcat(c, opacity_slider)
+        
+        # Add a radio button to switch between different data sources
+        data_source_radio = alt.binding_radio(options=['Upper', 'Lower'], name='Data Source:')
+        data_source_selection = alt.selection_single(bind=data_source_radio, fields=['data_source'], init={'data_source': 'Upper'})
+        line1 = line1.transform_filter(data_source_selection)
+        line2 = line2.transform_filter(data_source_selection)
+        
+        # Bind the radio button to the data source selection
+        data_source_radio = data_source_radio.add_selection(data_source_selection)
+        
+        # Combine the chart, the slider, and the radio button
+        c = alt.vconcat(c, data_source_radio)
+        
+        # Display the chart
         st.altair_chart(c, use_container_width=True)
 
         
