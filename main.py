@@ -148,9 +148,9 @@ if calcola:
                     lower_differences = np.subtract.outer(last_lowers, lowers).flatten()
 
                     if np.any(higher_differences<=0) or np.any(lower_differences>=0):
-                        st.write(f"**{stock} è da tenere d'occhio!**")
+                        st.write(f"{stock} è da tenere d'occhio!")
                     else:
-                        st.write(f"{stock} neutro")
+                        continue
 
 st.write("#### Calcolo miglior portfolio")
 col1, col2= st.columns([1,1])
