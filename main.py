@@ -139,15 +139,15 @@ if calcola:
                     df = obj.set_parameters(sma,devup,devdown)
                     lasts = df.iloc[-3:,:]
 
-                    highers = lasts['High'].values
+                    #highers = lasts['High'].values
                     lowers = lasts['Low'].values
-                    last_uppers = lasts["Upper"].values
+                    #last_uppers = lasts["Upper"].values
                     last_lowers = lasts["Lower"].values
 
-                    higher_differences = np.subtract.outer(last_uppers, highers).flatten()
+                    #higher_differences = np.subtract.outer(last_uppers, highers).flatten()
                     lower_differences = np.subtract.outer(last_lowers, lowers).flatten()
 
-                    if np.any(higher_differences<=0) or np.any(lower_differences>=0):
+                    if np.any(lower_differences>=0):
                         st.write(f"{stock} è da tenere d'occhio!")
                     else:
                         continue
