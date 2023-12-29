@@ -72,7 +72,7 @@ class BollingerStrategy():
             res.append(price)
 
         if res:
-            if np.max(res)>1:
+            if np.max(res)>1.1: #10% year return
                 opt = combinations[np.argmax(res)]
                 return opt[0], opt[1], opt[2]
             else:
