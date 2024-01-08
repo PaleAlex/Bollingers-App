@@ -29,8 +29,8 @@ class BollingerStrategy():
     
     def test_strategy(self):
         data = self.data.copy()
-        data['signal'] = np.where(data['Adj Close'] >= data['Upper'], -1, 0)
-        data['signal'] = np.where(data['Adj Close'] <= data['Lower'], 1, data['signal'])
+        data['signal'] = np.where(data['High'] >= data['Upper'], -1, 0)
+        data['signal'] = np.where(data['Low'] <= data['Lower'], 1, data['signal'])
         
         status = None
         buys = np.array([])
@@ -40,10 +40,10 @@ class BollingerStrategy():
             if status == None and row["signal"] != 1:
                 continue
             if row["signal"] != status and row['signal'] == 1.0:
-                buys = np.append(buys, row["Adj Close"])
+                buys = np.append(buys, row["Low"])
                 status = 1.0
             elif row["signal"] != status and row['signal'] == -1.0:
-                sells = np.append(sells, row["Adj Close"])
+                sells = np.append(sells, row["High"])
                 status = -1.0
             else:
                 continue
@@ -51,7 +51,7 @@ class BollingerStrategy():
         
         buy_signals = len(buys)
         sell_signals = len(sells)
-        if buy_signals == 0 or sell_signals == 0:
+        if buy_signals <2 or sell_signals <2: #at least 2 buy-sell periods in the interval
             return 0
         else:
             mean_price_buy_signal = buys.mean()
