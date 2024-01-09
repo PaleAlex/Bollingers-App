@@ -61,8 +61,8 @@ class BollingerStrategy():
             
     def optimizer(self):
         sma_range = (20, 70, 10)
-        dev_up_range = (1, 2.50, 0.15)
-        dev_down_range = (1, 2.50, 0.15)
+        dev_up_range = (1.00, 2.50, 0.15)
+        dev_down_range = (1.00, 2.50, 0.15)
         combinations = list(product(range(*sma_range), np.arange(*dev_up_range), np.arange(*dev_down_range)))
         #test all combinations
         res = []
