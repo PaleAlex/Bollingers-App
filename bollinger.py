@@ -61,8 +61,8 @@ class BollingerStrategy():
             
     def optimizer(self):
         sma_range = (20, 70, 10)
-        dev_up_range = (1.5, 2.6, 0.1)
-        dev_down_range = (1.5, 2.6, 0.1)
+        dev_up_range = (0.9, 2.4, 0.15)
+        dev_down_range = (0.9, 2.4, 0.15)
         combinations = list(product(range(*sma_range), np.arange(*dev_up_range), np.arange(*dev_down_range)))
         #test all combinations
         res = []
@@ -76,9 +76,9 @@ class BollingerStrategy():
                 opt = combinations[np.argmax(res)]
                 return opt[0], opt[1], opt[2]
             else:
-                return 70,2.6,2.6 #default, no optimization happened
+                return 70,2.4,2.4 #default, no optimization happened
         else:
-            return 70,2.6,2.6 #default, no optimization happened
+            return 70,2.4,2.4 #default, no optimization happened
     
     def volume_check(self, sma):
         data = self.data.copy()
