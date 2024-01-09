@@ -46,7 +46,7 @@ try:
             selection = ticker_diz[sel1]
         with st.spinner(text="Calcolando..."):
             obj = bs(selection,start,end)
-            sma, devup, devdown = obj.optimizer()
+            sma, devup, devdown, return_ratio = obj.optimizer()
             df = obj.set_parameters(sma,devup,devdown)    
 
         to_plot = df.reset_index()
@@ -99,7 +99,7 @@ try:
         
         st.write("**Check ottimizzazione strategia**")
 
-        if (sma, devup, devdown) != (70, 2.5, 2.5):
+        if (sma, devup, devdown) != (80, 2.5, 2.5):
             st.write(f"✅")
         else:
             st.write("❌")
@@ -112,7 +112,7 @@ try:
 
     with col1:
         with st.expander("Dettagli tecnici"):
-            st.write(f"Parametri ottimizzati: sma = {sma} | dev_up = {round(devup,1)} | dev_down {round(devdown,1)}")
+            st.write(f"Parametri ottimizzati: sma = {sma} | dev_up = {round(devup,1)} | dev_down {round(devdown,1)} | return {round(return_ratio,1)}")
             st.write(f"Exp moving average ultimi 5 giorni: {list(obj.volume_check(sma))}")
 except:
     with col2:
@@ -135,7 +135,7 @@ if calcola:
             if stock:
                 with st.spinner(text=f"Calcolando {stock}..."):
                     obj = bs(stock,start,end)
-                    sma, devup, devdown = obj.optimizer()
+                    sma, devup, devdown, return_ratio = obj.optimizer()
                     df = obj.set_parameters(sma,devup,devdown)
                     lasts = df.iloc[-3:,:]
 
