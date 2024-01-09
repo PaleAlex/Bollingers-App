@@ -11,7 +11,7 @@ st.set_page_config(page_title="PaleAlex: Investmenti",
 
 st.title("🚀 Supporto agli investimenti finanziari 🚀 📈")
 
-start = datetime.now()-timedelta(days=420)
+start = datetime.now()-timedelta(days=425)
 end = datetime.now()
 
 ticker_diz = {"Stellantis": "STLAM.MI",
@@ -99,7 +99,7 @@ try:
         
         st.write("**Check ottimizzazione strategia**")
 
-        if (sma, devup, devdown) != (70, 2.6, 2.6):
+        if (sma, devup, devdown) != (70, 2.5, 2.5):
             st.write(f"✅")
         else:
             st.write("❌")
