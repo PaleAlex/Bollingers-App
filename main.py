@@ -112,7 +112,7 @@ try:
 
     with col1:
         with st.expander("Dettagli tecnici"):
-            st.write(f"Parametri ottimizzati: sma = {sma} | dev_up = {round(devup,1)} | dev_down {round(devdown,1)} | return {round(return_ratio,1)}")
+            st.write(f"Parametri ottimizzati: sma = {sma} | dev_up = {round(devup,1)} | dev_down {round(devdown,1)} | return {round(return_ratio,2)}")
             st.write(f"Exp moving average ultimi 5 giorni: {list(obj.volume_check(sma))}")
 except:
     with col2:
