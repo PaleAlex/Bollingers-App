@@ -63,7 +63,7 @@ class BollingerStrategy():
         sma_range = (20, 100, 10)
         dev_up_range = (1.50, 2.50, 0.10)
         dev_down_range = (1.50, 2.50, 0.10)
-        combinations = list(product(range(*sma_range), np.arange(*dev_up_range), np.arange(*dev_down_range), 2))
+        combinations = list(product(range(*sma_range), np.arange(*dev_up_range), np.arange(*dev_down_range)))
         #test all combinations
         res = []
         for comb in combinations:
