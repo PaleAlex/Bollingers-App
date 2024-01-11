@@ -60,10 +60,10 @@ class BollingerStrategy():
             return mean_price_delta
             
     def optimizer(self):
-        sma_range = (20, 80, 10)
-        dev_up_range = (1.00, 2.50, 0.15)
-        dev_down_range = (1.00, 2.50, 0.15)
-        combinations = list(product(range(*sma_range), np.around(np.arange(*dev_up_range), 2), np.around(np.arange(*dev_down_range), 2)))
+        sma_range = (20, 100, 10)
+        dev_up_range = (1.50, 2.50, 0.10)
+        dev_down_range = (1.50, 2.50, 0.10)
+        combinations = list(product(range(*sma_range), np.arange(*dev_up_range), np.arange(*dev_down_range), 2))
         #test all combinations
         res = []
         for comb in combinations:
@@ -76,9 +76,9 @@ class BollingerStrategy():
                 opt = combinations[np.argmax(res)]
                 return opt[0], opt[1], opt[2], np.max(res)
             else:
-                return 80,2.5,2.5,None #default, no optimization happened
+                return 100,2.5,2.5,None #default, no optimization happened
         else:
-            return 80,2.5,2.5,None #default, no optimization happened
+            return 100,2.5,2.5,None #default, no optimization happened
     
     def volume_check(self, sma):
         data = self.data.copy()
