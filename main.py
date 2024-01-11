@@ -99,7 +99,7 @@ try:
         
         st.write("**Check ottimizzazione strategia**")
 
-        if (sma, devup, devdown) != (80, 2.5, 2.5):
+        if (sma, devup, devdown) != (100, 2.5, 2.5):
             st.write(f"✅")
         else:
             st.write("❌")
