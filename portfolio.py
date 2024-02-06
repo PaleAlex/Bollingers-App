@@ -29,7 +29,7 @@ class MCPortfolio():
         self.result = result
     
     def optimizer(self):
-        n = 50000
+        n = 30000
         BUSINESS_DAYS = 252 # mean annual business day
 
         weights = np.zeros((n, len(self.result.columns)))
