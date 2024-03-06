@@ -201,7 +201,7 @@ if calcola_SSA:
     if ssa_object.Wcorr is None:
         ssa_object.calc_wcorr()
 
-    fig, ax = plt.subplots(3,1)
+    fig, ax = plt.subplots(4,1, figsize=(8, 8))
     
     ax[0].imshow(ssa_object.Wcorr)
     ax[0].set_xlabel(r"$\tilde{F}_i$")
@@ -213,13 +213,16 @@ if calcola_SSA:
     ax[1].plot(ssa_object.orig_TS)
     ax[1].set_title("Adj Close stock price") 
 
-    ax[2].plot(ssa_object.reconstruct(list(ssa_components1)))
-    ax[2].plot(ssa_object.reconstruct(list(ssa_components2)))
-    ax[2].set_title("Segnali principali") 
+    ax[2].plot(ssa_object.reconstruct(list(ssa_components1)), linewidth=0.5)
+    ax[2].set_title(f"Derivata dei segnali {ssa_components1}")
+    ax[2].axhline(y=0, color='black')
 
-    ax[0].tick_params(axis='both', labelsize=4)
-    ax[1].tick_params(axis='both', labelsize=4)
-    ax[2].tick_params(axis='both', labelsize=4)
+    ax[3].plot(ssa_object.reconstruct(list(ssa_components2)), linewidth=0.5)
+    ax[3].set_title(f"Derivata dei segnali {ssa_components2}")
+    ax[3].axhline(y=0, color='black')
+
+    for i in range(4):
+        ax[i].tick_params(axis='both', labelsize=4)
 
     # Display the plot in Streamlit
     plt.tight_layout()

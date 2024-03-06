@@ -106,7 +106,10 @@ class SSA_actions(object):
         if isinstance(indices, int): indices = [indices]
         
         ts_vals = self.TS_comps[:,indices].sum(axis=1)
-        return pd.Series(ts_vals, index=self.orig_TS.index)
+        ts_vals =  pd.Series(ts_vals, index=self.orig_TS.index)
+        ts_vals = ts_vals - ts_vals.shift(1) #derivatives of the signal
+        return ts_vals.dropna()
+    
     
     def calc_wcorr(self):
         """
