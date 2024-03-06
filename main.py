@@ -1,17 +1,19 @@
-from datetime import timedelta, datetime
 from bollinger import BollingerStrategy as bs
 from portfolio import MCPortfolio as mc
+from SSA_decomposition import SSA_actions
+from datetime import timedelta, datetime
 import streamlit as st
 import altair as alt
 import numpy as np
+import matplotlib.pyplot as plt
 
 st.set_page_config(page_title="PaleAlex: Investmenti",
                    page_icon=":globe_with_meridians:",
                    layout="wide")
 
 st.title("🚀 Supporto agli investimenti finanziari 🚀 📈")
-
-start = datetime.now()-timedelta(days=425)
+days = 425
+start = datetime.now()-timedelta(days=days)
 end = datetime.now()
 
 ticker_diz = {"Stellantis": "STLAM.MI",
@@ -163,9 +165,62 @@ with col1:
 
 if calcola_portfolio:
     ticker_stocks_list = ticker_stocks.upper().strip().split(",")
-    start = datetime.now()-timedelta(days=days_ago)
+    port_start = datetime.now()-timedelta(days=days_ago)
     with col2:
         with st.spinner(text="Calcolando..."):
-            tester = mc(ticker_stocks_list, start, end)
+            tester = mc(ticker_stocks_list, port_start, end)
             res = tester.optimizer()
             st.dataframe(res)
+
+
+
+st.write("#### Analisi dei segnali")
+
+with st.form(key = "signals"):
+    ticker_stock = st.text_input("cerca per ticker...", placeholder="es. AAPL")
+    L_window = st.number_input("Window Length", min_value=12)
+    ssa_components1 = st.slider(
+        'Componenti da aggregare - 1',
+        0, 10, (1, 2)
+        )
+    ssa_components2 = st.slider(
+        'Componenti da aggregare - 2',
+        0, 10, (3, 4)
+        )
+    
+    calcola_SSA = st.form_submit_button("Calcola")
+
+if calcola_SSA:
+    
+    # Add this line to ensure plots are displayed in Streamlit
+    st.set_option('deprecation.showPyplotGlobalUse', False)
+
+    ssa_object = SSA_actions(ticker_stock, start, end, L_window)
+    st.write(f"Lunghezza della TS: {len(ssa_object.orig_TS)-1}")
+
+    if ssa_object.Wcorr is None:
+        ssa_object.calc_wcorr()
+
+    fig, ax = plt.subplots(3,1)
+    
+    ax[0].imshow(ssa_object.Wcorr)
+    ax[0].set_xlabel(r"$\tilde{F}_i$")
+    ax[0].set_ylabel(r"$\tilde{F}_j$")
+
+    ax[0].set_xlim(0-0.5, 10+0.5)
+    ax[0].set_ylim(10+0.5, 0-0.5)
+
+    ax[1].plot(ssa_object.orig_TS)
+    ax[1].set_title("Adj Close stock price") 
+
+    ax[2].plot(ssa_object.reconstruct(list(ssa_components1)))
+    ax[2].plot(ssa_object.reconstruct(list(ssa_components2)))
+    ax[2].set_title("Segnali principali") 
+
+    ax[0].tick_params(axis='both', labelsize=4)
+    ax[1].tick_params(axis='both', labelsize=4)
+    ax[2].tick_params(axis='both', labelsize=4)
+
+    # Display the plot in Streamlit
+    plt.tight_layout()
+    st.pyplot(fig)
