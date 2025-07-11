@@ -1,5 +1,5 @@
 altair==4.1.0
-streamlit==1.31.0
+streamlit==1.37.0
 yfinance==0.2.65
 matplotlib==3.8.0
 pandas==2.3.0
