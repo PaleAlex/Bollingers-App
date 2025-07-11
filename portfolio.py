@@ -5,19 +5,19 @@ from datetime import datetime, timedelta
 
 class MCPortfolio():
     
-    def __init__(self, ticker: list, start, end):
+    def __init__(self, ticker: list, data: dict, start, end):
         self.ticker = ticker # ["ticker", "ticker1", ""]
         self.start = start
         self.end = end
+        self.data = data
         self.get_data()
         self.prepare_data()
     
     def get_data(self):
         df_list = []
-        for ticker in self.ticker:
-            df = yf.download(ticker, start = self.start, end = self.end)
-            df.index = pd.to_datetime(df.index)
-            df_list.append(df['Adj Close'])
+        for t in self.ticker:
+            df = self.data[t]
+            df_list.append(df['Close'])
         raw = pd.concat(df_list, axis=1)
         raw.columns = self.ticker
         self.data = raw 

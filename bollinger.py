@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-import yfinance as yf
 from functools import partial
 import numpy as np
 from itertools import product
@@ -8,20 +7,12 @@ from itertools import product
 
 class BollingerStrategy():
 
-    def __init__(self, ticker, start, end):
-        self.ticker = ticker
+    def __init__(self, data, start, end):
+        self.data = data
         self.start = start
         self.end = end
-        self.get_data()
     
-    def get_data(self):
-        raw = yf.download(tickers = self.ticker, start = self.start, end = self.end)
-        raw.index = pd.to_datetime(raw.index)
-        raw.index.rename("Date", inplace = True)
-        raw['TP'] = (raw["High"] + raw["Low"] + raw["Adj Close"])/3
-        self.data = raw#.iloc[:,4:]
-    
-    def set_parameters(self, sma, dev_up, dev_down):        
+    def set_parameters(self, sma, dev_up, dev_down):       
         self.data["SMA"] = self.data['TP'].rolling(sma).mean()
         self.data["Upper"] = self.data['SMA'] + dev_up * self.data['TP'].rolling(sma).std()
         self.data["Lower"] = self.data['SMA'] - dev_down * self.data['TP'].rolling(sma).std()
