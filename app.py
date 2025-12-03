@@ -143,6 +143,7 @@ if calcola:
                 obj = bs(ticker_data,start,end)
                 sma, devup, devdown, return_ratio = obj.optimizer()
                 df = obj.set_parameters(sma,devup,devdown)
+
                 lasts = df.iloc[-3:,:]
 
                 #highers = lasts['High'].values
@@ -154,6 +155,7 @@ if calcola:
                 lower_differences = np.subtract.outer(last_lowers, lowers).flatten()
 
                 if np.any(lower_differences>=0):
+                    print(lowers, last_lowers, lower_differences)
                     st.write(f"{stock} è da tenere d'occhio!")
                 else:
                     continue
