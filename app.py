@@ -165,73 +165,71 @@ col1, col2= st.columns([1,1])
 
 with col1:
     with st.form(key = "porfolio"):
-        ticker_stocks = st.text_input("Lista di ticker separati da virgola", placeholder="es. AAPL,TSLA,GOOG")
-        days_ago = int(st.number_input("Analisi da _ giorni fa (min 365, max 1299)", min_value=365, max_value=1299))
+        ticker_stocks_list = st.multiselect("Lista di ticker da confrontare", options=ticker_list)
+        uniform_weights_bool = st.toggle("Uniform Weights")
         calcola_portfolio = st.form_submit_button("Calcola")
 
 if calcola_portfolio:
-    ticker_stocks_list = ticker_stocks.upper().strip().split(",")
-    port_start = datetime.now()-timedelta(days=days_ago)
     with col2:
         with st.spinner(text="Calcolando..."):
-            tester = mc(ticker_stocks_list, st.session_state.get('ticker_dict'), port_start, end)
-            res = tester.optimizer()
+            tester = mc(ticker_stocks_list, st.session_state.get('ticker_dict'))
+            res = tester.optimizer(equal_fundamental_weights=uniform_weights_bool)
             st.dataframe(res)
 
 
 
 #to be adjusted
-st.write("#### Analisi dei segnali")
+# st.write("#### Analisi dei segnali")
 
-with st.form(key = "signals"):
-    ticker_stock = st.text_input("cerca per ticker...", placeholder="es. AAPL")
-    L_window = st.number_input("Window Length", min_value=12)
-    ssa_components1 = st.slider(
-        'Componenti da aggregare - 1',
-        0, 10, (1, 2)
-        )
-    ssa_components2 = st.slider(
-        'Componenti da aggregare - 2',
-        0, 10, (3, 4)
-        )
+# with st.form(key = "signals"):
+#     ticker_stock = st.text_input("cerca per ticker...", placeholder="es. AAPL")
+#     L_window = st.number_input("Window Length", min_value=12)
+#     ssa_components1 = st.slider(
+#         'Componenti da aggregare - 1',
+#         0, 10, (1, 2)
+#         )
+#     ssa_components2 = st.slider(
+#         'Componenti da aggregare - 2',
+#         0, 10, (3, 4)
+#         )
     
-    calcola_SSA = st.form_submit_button("Calcola")
+#     calcola_SSA = st.form_submit_button("Calcola")
 
 
-if calcola_SSA:
+# if calcola_SSA:
     
-    # Add this line to ensure plots are displayed in Streamlit
-    st.set_option('deprecation.showPyplotGlobalUse', False)
+#     # Add this line to ensure plots are displayed in Streamlit
+#     st.set_option('deprecation.showPyplotGlobalUse', False)
 
-    ssa_object = SSA_actions(ticker_stock, start, end, L_window)
-    st.write(f"Lunghezza della TS: {len(ssa_object.orig_TS)-1}")
+#     ssa_object = SSA_actions(ticker_stock, start, end, L_window)
+#     st.write(f"Lunghezza della TS: {len(ssa_object.orig_TS)-1}")
 
-    if ssa_object.Wcorr is None:
-        ssa_object.calc_wcorr()
+#     if ssa_object.Wcorr is None:
+#         ssa_object.calc_wcorr()
 
-    fig, ax = plt.subplots(4,1, figsize=(8, 8))
+#     fig, ax = plt.subplots(4,1, figsize=(8, 8))
     
-    ax[0].imshow(ssa_object.Wcorr)
-    ax[0].set_xlabel(r"$\tilde{F}_i$")
-    ax[0].set_ylabel(r"$\tilde{F}_j$")
+#     ax[0].imshow(ssa_object.Wcorr)
+#     ax[0].set_xlabel(r"$\tilde{F}_i$")
+#     ax[0].set_ylabel(r"$\tilde{F}_j$")
 
-    ax[0].set_xlim(0-0.5, 10+0.5)
-    ax[0].set_ylim(10+0.5, 0-0.5)
+#     ax[0].set_xlim(0-0.5, 10+0.5)
+#     ax[0].set_ylim(10+0.5, 0-0.5)
 
-    ax[1].plot(ssa_object.orig_TS)
-    ax[1].set_title("Adj Close stock price") 
+#     ax[1].plot(ssa_object.orig_TS)
+#     ax[1].set_title("Adj Close stock price") 
 
-    ax[2].plot(ssa_object.reconstruct(list(ssa_components1)), linewidth=0.5)
-    ax[2].set_title(f"Derivata dei segnali {ssa_components1}")
-    ax[2].axhline(y=0, color='black')
+#     ax[2].plot(ssa_object.reconstruct(list(ssa_components1)), linewidth=0.5)
+#     ax[2].set_title(f"Derivata dei segnali {ssa_components1}")
+#     ax[2].axhline(y=0, color='black')
 
-    ax[3].plot(ssa_object.reconstruct(list(ssa_components2)), linewidth=0.5)
-    ax[3].set_title(f"Derivata dei segnali {ssa_components2}")
-    ax[3].axhline(y=0, color='black')
+#     ax[3].plot(ssa_object.reconstruct(list(ssa_components2)), linewidth=0.5)
+#     ax[3].set_title(f"Derivata dei segnali {ssa_components2}")
+#     ax[3].axhline(y=0, color='black')
 
-    for i in range(4):
-        ax[i].tick_params(axis='both', labelsize=4)
+#     for i in range(4):
+#         ax[i].tick_params(axis='both', labelsize=4)
 
-    # Display the plot in Streamlit
-    plt.tight_layout()
-    st.pyplot(fig)
+#     # Display the plot in Streamlit
+#     plt.tight_layout()
+#     st.pyplot(fig)
