@@ -119,10 +119,17 @@ try:
             else:
                 st.write("❌")
 
+            st.write("**Check historical trend**")
+            trend_analysis = obj.trend_check()
+            st.write(f"Slope: {trend_analysis['slope']:.6f}")
+            st.write(f"R²: {trend_analysis['r_squared']:.3f}")
+            st.write(f"Efficiency: {trend_analysis['efficiency']:.3f}")
+
         with col1:
             with st.expander("Dettagli tecnici"):
                 st.write(f"Parametri ottimizzati: sma = {sma} | dev_up = {round(devup,1)} | dev_down {round(devdown,1)} | return {round(return_ratio,2)}")
                 st.write(f"Exp moving average ultimi 5 giorni: {list(obj.volume_check(sma))}")
+
 except Exception as e:
     print(f"Errore durante il calcolo: {e}")
     with col2:

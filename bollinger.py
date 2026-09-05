@@ -3,6 +3,7 @@ import numpy as np
 from functools import partial
 import numpy as np
 from itertools import product
+from scipy.stats import linregress
 
 
 class BollingerStrategy():
@@ -79,3 +80,19 @@ class BollingerStrategy():
         data['Volume_check'] = (data['Volume'].rolling(sma).apply(ewma))/data['Volume'].mean()
         return data['Volume_check'].tail()
         
+    def trend_check(self):
+        data = self.data.copy().dropna(subset=['TP'])
+
+        log_price = np.log(data['TP'].values)
+        x = np.arange(len(log_price))
+
+        slope, _, r_value, _, _ = linregress(x, log_price)
+
+        log_returns = np.diff(log_price)
+        efficiency = log_returns.sum() / np.abs(log_returns).sum()
+
+        return {
+            'slope': slope,
+            'r_squared': r_value ** 2,
+            'efficiency': efficiency
+        }
